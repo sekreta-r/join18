@@ -6,6 +6,7 @@ import ru.hpclab.hl.module1.client.DeliveryClient;
 import ru.hpclab.hl.module1.client.ParcelClient;
 import ru.hpclab.hl.module1.dto.*;
 import ru.hpclab.hl.module1.service.cache.CourierCache;
+import ru.hpclab.hl.module1.service.cache.CourierRedisCache;
 
 import java.time.Month;
 import java.util.*;
@@ -17,15 +18,18 @@ public class CourierStatsService {
     private final CourierClient courierClient;
     private final DeliveryClient deliveryClient;
     private final ParcelClient parcelClient;
+    private final CourierRedisCache courierRedisCache;
 
     public CourierStatsService(
             CourierClient courierClient,
             DeliveryClient deliveryClient,
-            ParcelClient parcelClient
+            ParcelClient parcelClient,
+            CourierRedisCache courierRedisCache
     ) {
         this.courierClient = courierClient;
         this.deliveryClient = deliveryClient;
         this.parcelClient = parcelClient;
+        this.courierRedisCache = courierRedisCache;
     }
 
     public List<CourierStatsDTO> getStatsForAllCouriers() {
@@ -68,11 +72,11 @@ public class CourierStatsService {
     }
 
     private CourierDTO getCourierById(Long id) {
-        if (!CourierCache.contains(id)) {
+        if (!courierRedisCache.contains(id)) {
             CourierDTO courier = courierClient.getCourierById(id);
-            CourierCache.put(courier);
+            courierRedisCache.put(courier);
             return courier;
         }
-        return CourierCache.get(id).orElseThrow();
+        return courierRedisCache.get(id).orElseThrow();
     }
 }

@@ -34,6 +34,11 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.36'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
 
+    implementation "io.github.resilience4j:resilience4j-spring-boot3:2.2.0"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-aop"
+
+    implementation("org.springframework.boot:spring-boot-starter-data-redis:3.4.5")
 }
 
 tasks.named('test') {
